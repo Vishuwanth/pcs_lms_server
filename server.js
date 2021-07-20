@@ -47,4 +47,5 @@ const User = new mongoose.model("Employee",employeeSchema)
 //Routes
 
 app.listen(9002,() => {
-    console.log("BE started at port 90
+    console.log("BE started at port 9002")
+})
