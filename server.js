@@ -12,10 +12,15 @@ const app = express()
 app.use(express.json())
 // app.use(express.urlencoded())
 app.use(cors())
+
+app.use(bodyParser.urlencoded({
+    extended: true
+  }));
+
 app.use(bodyParser.json())
 
 const jwtKey = "PCS SECRET KEY"
-
+mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/pcsLMS',{
     useNewUrlParser: true,
     useUnifiedTopology:true
