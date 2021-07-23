@@ -236,7 +236,72 @@ app.post("/leave-application-emp/:id", (req, res) => {
   
 });
 
+//Deleting Leave Application by Employee
+app.delete("/leave-application-emp/:id/:id2",(req, res) => {
+    employees.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        LeaveApplication.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          leaveApplication
+        ) {
+          if (!err) {
+            console.log("LeaveApplication deleted");
+            employees.update(
+              { _id: req.params.id },
+              { $pull: { leaveApplication: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(leaveApplication);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
 
+//Updating Leave Application by employee
+
+app.put("/leave-application-emp/:id", (req, res) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newLeaveApplication;
+      newLeaveApplication = {
+        Leavetype: req.body.Leavetype,
+        FromDate: req.body.FromDate,
+        ToDate: req.body.ToDate,
+        Reasonforleave: req.body.Reasonforleave,
+        Status: req.body.Status,
+        employee: req.params.id
+      };
+
+      LeaveApplication.findByIdAndUpdate(
+        req.params.id,
+        newLeaveApplication,
+        function (err, leaveApplication) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newLeaveApplication);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  
+});
 
 
 
