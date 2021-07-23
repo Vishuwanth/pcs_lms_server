@@ -6,6 +6,7 @@ import autoIncrement from "mongoose-auto-increment"
 import bodyParser from "body-parser"
 import jwt from "jsonwebtoken"
 import Joi from "Joi"
+import cookieParser from "cookie-parser"
 
 const app = express()
 
@@ -59,6 +60,7 @@ const employees = new mongoose.model("Employee", employeeSchema)
 //Leave Application Schema
 
 const leaveApplicationSchema = new mongoose.Schema({
+  EmployeeName : { type: String},
   Leavetype: { type: String, required: false },
   FromDate: { type: Date, required: false },
   ToDate: { type: Date, required: false },
@@ -203,6 +205,7 @@ app.post("/leave-application-emp/:id", (req, res) => {
     } else {
       let newLeaveApplication;
       newLeaveApplication = {
+        EmployeeName:req.body.Name,
         Leavetype: req.body.Leavetype,
         FromDate: req.body.FromDate,
         ToDate: req.body.ToDate,
@@ -213,17 +216,18 @@ app.post("/leave-application-emp/:id", (req, res) => {
       console.log(newLeaveApplication)
       LeaveApplication.create(newLeaveApplication, function (err, leaveApplication) {
         if (err) {
-          console.log(err);
+          // console.log(err);
           res.send("error");
         } else {
           employee.leaveApplication.push(leaveApplication);
           employee.save(function (err, data) {
             if (err) {
-              console.log(err);
+              // console.log(err);
               res.send("err");
             } else {
-              console.log(data);
+              // console.log(data);
               res.send(leaveApplication);
+              console.log(leaveApplication)
             }
           });
           console.log("new leaveApplication Saved");
@@ -402,6 +406,29 @@ app.delete("/leave-application-hr/:id/:id2",  (req, res) => {
   });
 });
 
+//for nodemailer to send mail
+
+app.get("/leave-application-hr/:id/status-mail/", (req,res)=>{
+  LeaveApplication.findById(req.params.id)
+  .exec(function(err,employee) {
+    if(err){
+      res.send(err)
+      console.log(err)
+    }else{
+      // to get mail id from employee db
+      const employee_id = employee.employee[0]
+      employees.findById(employee_id)
+      .exec(function(e,emp){
+        if(e){
+          console.log(e)
+        }else{
+          res.send(emp.Email)
+        }
+      })
+
+    }
+  })
+})
 app.listen(9002, () => {
   console.log("BE started at port 9002")
 })
