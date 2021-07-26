@@ -25,7 +25,7 @@ app.use(bodyParser.json())
 
 const jwtKey = "PCS SECRET KEY"
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://localhost:27017/pcsLms', {
+mongoose.connect('mongodb://localhost:27017/pcsLMS', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }, () => {
@@ -43,10 +43,11 @@ const employeeSchema = new mongoose.Schema({
   Gender: { type: String, required: false },
   DOB: { type: Date, required: false },
   ContactNo: { type: String, required: false },
-  Account: { type: Number, required: false },
+  Account: { type: Number, required: false ,default:3},
   leaveApplication: [
     { type: mongoose.Schema.Types.ObjectId, ref: "LeaveApplication" }
-  ]
+  ],
+  leaveBalance:{type:Number,default:0}
 })
 autoIncrement.initialize(mongoose.connection);
 employeeSchema.plugin(autoIncrement.plugin, {
