@@ -191,7 +191,7 @@ app.get("/leave-application-emp/:id", (req, res) => {
         console.log(err);
         res.send("error");
       } else {
-        console.log("successfully ret")
+        console.log("successfully retrieved")
         res.send(employee);
       }
     });
@@ -215,6 +215,7 @@ app.post("/leave-application-emp/:id", (req, res) => {
         employee: req.params.id
       };
       console.log(newLeaveApplication)
+
       LeaveApplication.create(newLeaveApplication, function (err, leaveApplication) {
         if (err) {
           // console.log(err);
@@ -240,6 +241,41 @@ app.post("/leave-application-emp/:id", (req, res) => {
 
 
 });
+
+//Updating LeaveBalance in employee Record
+
+app.put("http://localhost:9002/leave-application-emp/:id",(req,res)=>{
+      employees.findByIdAndUpdate({_id:req.params.id},function(err,employee){
+        if(err){
+          res.send(err)
+        }
+        else{
+          let prevLeaveBalance = employee.leaveBalance
+          console.log(prevLeaveBalance)
+        }
+      })
+} )
+
+
+
+
+
+//Getting Leave balance from employee record to display
+
+app.get("/leave-application-emp/:id/leavebalance", (req,res)=> {
+  employees.findById({_id: req.params.id}, function(err, employee){
+    if(err){
+      res.send("error");
+      console.log(err)
+    }else{
+      console.log("get fucntion leave balance")
+      console.log(employee.leaveBalance)
+      res.send(employee)
+    }
+  })
+})
+
+
 
 //Deleting Leave Application by Employee
 app.delete("/leave-application-emp/:id/:id2", (req, res) => {
