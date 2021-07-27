@@ -25,7 +25,8 @@ app.use(bodyParser.json())
 
 const jwtKey = "PCS SECRET KEY"
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://localhost:27017/pcsLMS', {
+mongoose.set('useFindAndModify', false);
+mongoose.connect('mongodb://localhost:27017/pcsLms', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }, () => {
@@ -114,8 +115,8 @@ const EmployeeValidation = Joi.object().keys({
 //Routes
 //adding employees (removed verifyHR ,JOI,  EmployeeValidation functions)
 app.post("/employee", (req, res) => {
-  console.log("here the data")
-  console.log(req.body.FirstName)
+  // console.log("here the data")
+  // console.log(req.body.FirstName)
   let newEmployee;
   newEmployee = {
     FirstName: req.body.FirstName,
@@ -131,35 +132,35 @@ app.post("/employee", (req, res) => {
 
   employees.create(newEmployee, function (err, employee) {
     if (err) {
-      console.log(err);
+      // console.log(err);
       res.send("error");
     } else {
       res.send(employee);
 
-      console.log("new employee Saved");
+      // console.log("new employee Saved");
     }
   });
-  console.log(req.body);
+  // console.log(req.body);
 
 
 });
 
 //Login Route
 app.post("/login", (req, res) => {
-  console.log("here it is")
-  console.log(req.body.userMail)
-  console.log(req.body.userPass)
+  // console.log("here it is")
+  // console.log(req.body.userMail)
+  // console.log(req.body.userPass)
 
   employees.findOne(
     { Email: req.body.userMail },
     "Password _id Account FirstName LastName",
     function (err, employees) {
       if (err || employees == null) {
-        console.log("first if part")
+        // console.log("first if part")
         res.send("false");
       } else {
         if (employees.Password == req.body.userPass) {
-          console.log("passed the function")
+          // console.log("passed the function")
           const emp = {
             _id: employees._id,
             Account: employees.Account,
@@ -170,7 +171,7 @@ app.post("/login", (req, res) => {
 
           res.send(token);
         } else {
-          console.log("else part")
+          // console.log("else part")
           res.sendStatus(400);
         }
       }
@@ -180,7 +181,7 @@ app.post("/login", (req, res) => {
 
 //Getting Employee Information to load table in Leave Application
 app.get("/leave-application-emp/:id", (req, res) => {
-  console.log(req.params.id);
+  // console.log(req.params.id);
   employees.findById(req.params.id)
     .populate({
       path: "leaveApplication"
@@ -188,11 +189,13 @@ app.get("/leave-application-emp/:id", (req, res) => {
     .select("FirstName LastName MiddleName")
     .exec(function (err, employee) {
       if (err) {
-        console.log(err);
+        // console.log(err);
         res.send("error");
       } else {
-        console.log("successfully retrieved")
+        // console.log("successfully retrieved")
+        console.log(typeof(employee))
         res.send(employee);
+        
       }
     });
 });
@@ -214,7 +217,7 @@ app.post("/leave-application-emp/:id", (req, res) => {
         Status: req.body.Status,
         employee: req.params.id
       };
-      console.log(newLeaveApplication)
+      // console.log(newLeaveApplication)
 
       LeaveApplication.create(newLeaveApplication, function (err, leaveApplication) {
         if (err) {
@@ -229,13 +232,13 @@ app.post("/leave-application-emp/:id", (req, res) => {
             } else {
               // console.log(data);
               res.send(leaveApplication);
-              console.log(leaveApplication)
+              // console.log(leaveApplication)
             }
           });
-          console.log("new leaveApplication Saved");
+          // console.log("new leaveApplication Saved");
         }
       });
-      console.log(req.body);
+      // console.log(req.body);
     }
   });
 
@@ -244,16 +247,20 @@ app.post("/leave-application-emp/:id", (req, res) => {
 
 //Updating LeaveBalance in employee Record
 
-app.put("http://localhost:9002/leave-application-emp/:id",(req,res)=>{
-      employees.findByIdAndUpdate({_id:req.params.id},function(err,employee){
-        if(err){
-          res.send(err)
-        }
-        else{
-          let prevLeaveBalance = employee.leaveBalance
-          console.log(prevLeaveBalance)
-        }
-      })
+app.put("/leave-application-emp/:id/leave-balance/",(req,res)=>{
+  console.log("leave-idsnadknaslkdla:",req.body.leaveBalance)
+  let LeaveBalance =  req.body.leaveBalance - 1
+  console.log(LeaveBalance)
+  employees.findByIdAndUpdate(
+    req.params.id,
+    {$set:{leaveBalance:LeaveBalance}},
+    function(err,response){
+      console.log("response",response)
+      res.send(response)
+    }
+  )
+  // res.send(employees.leaveBalance)
+  console.log(employees.leaveBalance)
 } )
 
 
@@ -262,14 +269,14 @@ app.put("http://localhost:9002/leave-application-emp/:id",(req,res)=>{
 
 //Getting Leave balance from employee record to display
 
-app.get("/leave-application-emp/:id/leavebalance", (req,res)=> {
+app.get("/leave-application-emp/:id/leave-balance", (req,res)=> {
   employees.findById({_id: req.params.id}, function(err, employee){
     if(err){
       res.send("error");
-      console.log(err)
+      // console.log(err)
     }else{
-      console.log("get fucntion leave balance")
-      console.log(employee.leaveBalance)
+  
+      // console.log(employee.leaveBalance)
       res.send(employee)
     }
   })
@@ -282,29 +289,29 @@ app.delete("/leave-application-emp/:id/:id2", (req, res) => {
   employees.findById({ _id: req.params.id }, function (err, employee) {
     if (err) {
       res.send("error");
-      console.log(err);
+      // console.log(err);
     } else {
       LeaveApplication.findByIdAndRemove({ _id: req.params.id2 }, function (
         err,
         leaveApplication
       ) {
         if (!err) {
-          console.log("LeaveApplication deleted");
+          // console.log("LeaveApplication deleted");
           employees.update(
             { _id: req.params.id },
             { $pull: { leaveApplication: req.params.id2 } },
             function (err, numberAffected) {
-              console.log(numberAffected);
+              // console.log(numberAffected);
               res.send(leaveApplication);
             }
           );
         } else {
-          console.log(err);
+          // console.log(err);
           res.send("error");
         }
       });
-      console.log("delete");
-      console.log(req.params.id);
+      // console.log("delete");
+      // console.log(req.params.id);
     }
   });
 }
@@ -314,8 +321,8 @@ app.delete("/leave-application-emp/:id/:id2", (req, res) => {
 
 app.put("/leave-application-emp/:id", (req, res) => {
 
-  console.log(req.params.id)
-
+  // console.log(req.params.id)
+  console.log("api called")
   let newLeaveApplication;
   newLeaveApplication = {
     Leavetype: req.body.Leavetype,
@@ -325,7 +332,7 @@ app.put("/leave-application-emp/:id", (req, res) => {
     Status: req.body.Status,
     employee: req.params.id
   };
-
+  console.log("newLeave",newLeaveApplication)
   LeaveApplication.findByIdAndUpdate(
     req.params.id,
     newLeaveApplication,
@@ -333,14 +340,14 @@ app.put("/leave-application-emp/:id", (req, res) => {
       if (err) {
         res.send("error");
       } else {
-        console.log(newLeaveApplication)
-        res.send(newLeaveApplication);
+        console.log("leaveApplication",leaveApplication)
+        res.send(leaveApplication);
       }
     }
   );
 
-  console.log("put");
-  console.log(req.body);
+  // console.log("put");
+  // console.log(req.body);
 
 });
 
@@ -359,7 +366,7 @@ app.put("/leave-application-hr/:id", (req, res) => {
       $set: newLeaveApplication
     },
     function (err, numberAffected) {
-      console.log(numberAffected);
+      // console.log(numberAffected);
       res.send(newLeaveApplication);
     }
 
@@ -380,7 +387,7 @@ app.get("/leave-application-hr", (req, res) => {
     .exec(function (err, leaveApplication) {
       // console.log(filteredCompany);
       if (err) {
-        console.log(err);
+        // console.log(err);
         res.send("error");
       } else {
         res.send(leaveApplication);
@@ -403,7 +410,7 @@ app.put("/leave-application-hr/:id", (req, res) => {
       $set: newLeaveApplication
     },
     function (err, numberAffected) {
-      console.log(numberAffected);
+      // console.log(numberAffected);
       res.send(newLeaveApplication);
     }
   );
@@ -416,29 +423,29 @@ app.delete("/leave-application-hr/:id/:id2",  (req, res) => {
   employees.findById({ _id: req.params.id }, function (err, employee) {
     if (err) {
       res.send("error");
-      console.log(err);
+      // console.log(err);
     } else {
       LeaveApplication.findByIdAndRemove({ _id: req.params.id2 }, function (
         err,
         leaveApplication
       ) {
         if (!err) {
-          console.log("LeaveApplication deleted");
+          // console.log("LeaveApplication deleted");
           employees.update(
             { _id: req.params.id },
             { $pull: { leaveApplication: req.params.id2 } },
             function (err, numberAffected) {
-              console.log(numberAffected);
+              // console.log(numberAffected);
               res.send(leaveApplication);
             }
           );
         } else {
-          console.log(err);
+          // console.log(err);
           res.send("error");
         }
       });
-      console.log("delete");
-      console.log(req.params.id);
+      // console.log("delete");
+      // console.log(req.params.id);
     }
   });
 });
@@ -450,14 +457,14 @@ app.get("/leave-application-hr/:id/status-mail/", (req,res)=>{
   .exec(function(err,employee) {
     if(err){
       res.send(err)
-      console.log(err)
+      // console.log(err)
     }else{
       // to get mail id from employee db
       const employee_id = employee.employee[0]
       employees.findById(employee_id)
       .exec(function(e,emp){
         if(e){
-          console.log(e)
+          // console.log(e)
         }else{
           res.send(emp.Email)
         }
