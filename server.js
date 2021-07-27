@@ -140,8 +140,6 @@ app.post("/employee", (req, res) => {
     }
   });
   console.log(req.body);
-
-
 });
 
 //Login Route
@@ -244,18 +242,36 @@ app.post("/leave-application-emp/:id", (req, res) => {
 
 //Updating LeaveBalance in employee Record
 
-app.put("http://localhost:9002/leave-application-emp/:id",(req,res)=>{
-      employees.findByIdAndUpdate({_id:req.params.id},function(err,employee){
-        if(err){
-          res.send(err)
-        }
-        else{
-          let prevLeaveBalance = employee.leaveBalance
-          console.log(prevLeaveBalance)
-        }
-      })
+app.put("/leave-application-emp/:id",(req,res)=>{
+
+  console.log("leave-idsnadknaslkdla:",req.body.leaveBalance)
+  let LeaveBalance =  req.body.leaveBalance - 1
+  console.log(LeaveBalance)
+  employees.findByIdAndUpdate(
+    req.params.id,
+    {$set:{leaveBalance:LeaveBalance}},
+    function(err,response){
+      console.log("response",response)
+      res.send(response)
+    }
+  )
+  res.send(employees.leaveBalance)
+  console.log(employees.leaveBalance)
 } )
 
+
+//getting employee information for profile module
+app.get("/employee/:id/profile",(req,res)=>{
+ 
+  employees.findById({_id:req.params.id},function(err,employee){
+    if(err){
+      res.send(err)
+    }
+    else{
+      res.send(employee)
+    }
+  })
+})
 
 
 
@@ -263,6 +279,7 @@ app.put("http://localhost:9002/leave-application-emp/:id",(req,res)=>{
 //Getting Leave balance from employee record to display
 
 app.get("/leave-application-emp/:id/leavebalance", (req,res)=> {
+  
   employees.findById({_id: req.params.id}, function(err, employee){
     if(err){
       res.send("error");
@@ -315,7 +332,7 @@ app.delete("/leave-application-emp/:id/:id2", (req, res) => {
 app.put("/leave-application-emp/:id", (req, res) => {
 
   console.log(req.params.id)
-
+  console.log("put function called")
   let newLeaveApplication;
   newLeaveApplication = {
     Leavetype: req.body.Leavetype,
@@ -333,8 +350,8 @@ app.put("/leave-application-emp/:id", (req, res) => {
       if (err) {
         res.send("error");
       } else {
-        console.log(newLeaveApplication)
-        res.send(newLeaveApplication);
+        console.log(leaveApplication)
+        res.send(leaveApplication);
       }
     }
   );
