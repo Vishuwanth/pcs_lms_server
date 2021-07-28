@@ -161,7 +161,7 @@ app.post("/employee", (req, res) => {
   employees.create(newEmployee, function (err, employee) {
     if (err) {
       // console.log(err);
-      res.send("error");
+      res.send(err);
     } else {
       res.send(employee);
 
