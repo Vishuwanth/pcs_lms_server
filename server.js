@@ -113,6 +113,32 @@ const EmployeeValidation = Joi.object().keys({
 
 
 //Routes
+
+//getting all employees details for HR module
+
+app.get("/hr/all-emp-details",(req,res)=>{
+  // {
+  //   "Account":3
+  // },
+  console.log("called")
+  employees.find({
+    "Account":3
+  },function(error,allEmp){
+    if(error){
+      res.send(error)
+    }
+    else{
+      console.log(allEmp)
+      res.send(allEmp)
+    }
+  })
+  
+})
+
+
+
+
+
 //adding employees (removed verifyHR ,JOI,  EmployeeValidation functions)
 app.post("/employee", (req, res) => {
   // console.log("here the data")
