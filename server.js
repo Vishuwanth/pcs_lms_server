@@ -26,7 +26,7 @@ app.use(bodyParser.json())
 const jwtKey = "PCS SECRET KEY"
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://localhost:27017/pcsLms', {
+mongoose.connect('mongodb://localhost:27017/pcsLMS', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }, () => {
