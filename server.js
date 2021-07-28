@@ -6,7 +6,7 @@ import autoIncrement from "mongoose-auto-increment"
 // autoIncrement = require("mongoose-auto-increment")
 import bodyParser from "body-parser"
 import jwt from "jsonwebtoken"
-import Joi from "Joi"
+// import Joi from "Joi"
 import cookieParser from "cookie-parser"
 
 dotenv.config()
@@ -82,36 +82,36 @@ const LeaveApplication = mongoose.model(
   leaveApplicationSchema
 );
 
-const EmployeeValidation = Joi.object().keys({
+// const EmployeeValidation = Joi.object().keys({
 
-  FirstName: Joi.string()
-    .max(200)
-    .required(),
-  MiddleName: Joi.string()
-    .max(200)
-    .required(),
-  LastName: Joi.string()
-    .max(200)
-    .required(),
-  Email: Joi.string()
-    .max(200)
-    .required(),
-  Password: Joi.string()
-    .max(100)
-    .required(),
-  Gender: Joi.string()
-    .max(100)
-    .required(),
-  DOB: Joi.date().required(),
+//   FirstName: Joi.string()
+//     .max(200)
+//     .required(),
+//   MiddleName: Joi.string()
+//     .max(200)
+//     .required(),
+//   LastName: Joi.string()
+//     .max(200)
+//     .required(),
+//   Email: Joi.string()
+//     .max(200)
+//     .required(),
+//   Password: Joi.string()
+//     .max(100)
+//     .required(),
+//   Gender: Joi.string()
+//     .max(100)
+//     .required(),
+//   DOB: Joi.date().required(),
 
-  ContactNo: Joi.string()
-    .max(20)
-    .required(),
+//   ContactNo: Joi.string()
+//     .max(20)
+//     .required(),
 
-  Account: Joi.number()
-    .max(3)
-    .required()
-});
+//   Account: Joi.number()
+//     .max(3)
+//     .required()
+// });
 
 
 //Routes
