@@ -188,6 +188,7 @@ app.post("/login", (req, res) => {
         res.send("false");
       } else {
         let isPasswordMatched = bcrypt.compare(employees.Password,req.body.userPass)
+        console.log(isPasswordMatched)
         if (isPasswordMatched) {
           // console.log("passed the function")
           const emp = {
