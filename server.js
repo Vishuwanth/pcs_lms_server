@@ -138,20 +138,19 @@ app.get("/hr/all-emp-details",(req,res)=>{
 })
 
 
-
-
-
 //adding employees (removed verifyHR ,JOI,  EmployeeValidation functions)
-app.post("/employee", (req, res) => {
+app.post("/employee", async (req, res) => {
   // console.log("here the data")
   // console.log(req.body.FirstName)
+  const hashedPassword = await bcrypt.hash(req.body.Password,10);
+  console.log("Hashed Password",hashedPassword)
   let newEmployee;
   newEmployee = {
     FirstName: req.body.FirstName,
     MiddleName: req.body.MiddleName,
     LastName: req.body.LastName,
     Email: req.body.Email,
-    Password: req.body.Password,
+    Password: hashedPassword,
     Gender: req.body.Gender,
     DOB: req.body.DOB,
     ContactNo: req.body.ContactNo,
@@ -187,7 +186,8 @@ app.post("/login", (req, res) => {
         // console.log("first if part")
         res.send("false");
       } else {
-        if (employees.Password == req.body.userPass) {
+        let isPasswordMatched = bcrypt.compare(employees.Password,req.body.userPass)
+        if (isPasswordMatched) {
           // console.log("passed the function")
           const emp = {
             _id: employees._id,
