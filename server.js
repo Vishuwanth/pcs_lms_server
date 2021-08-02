@@ -6,6 +6,7 @@ import autoIncrement from "mongoose-auto-increment"
 // autoIncrement = require("mongoose-auto-increment")
 import bodyParser from "body-parser"
 import jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt'
 // import Joi from "Joi"
 import cookieParser from "cookie-parser"
 
