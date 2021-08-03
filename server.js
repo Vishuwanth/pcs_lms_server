@@ -109,9 +109,6 @@ const LeaveApplication = mongoose.model(
 //     .max(20)
 //     .required(),
 
-//   Account: Joi.number()
-//     .max(3)
-//     .required()
 // });
 
 
@@ -170,14 +167,13 @@ app.post("/employee", async (req, res) => {
   });
   // console.log(req.body);
 
-
 });
 
 //Login Route
 app.post("/login", (req, res) => {
-  // console.log("here it is")
-  // console.log(req.body.userMail)
-  // console.log(req.body.userPass)
+  console.log("here it is")
+  console.log(req.body.userMail)
+  console.log(req.body.userPass)
 
   employees.findOne(
     { Email: req.body.userMail },
@@ -188,8 +184,9 @@ app.post("/login", (req, res) => {
         res.send("false");
       } else {
         let isPasswordMatched = bcrypt.compare(employees.Password,req.body.userPass)
-        console.log(isPasswordMatched)
-        if (isPasswordMatched) {
+        console.log("Employee Password",employees.Password)
+        console.log("matched or not",isPasswordMatched)
+        if (employees.Password==req.body.userPass) {
           // console.log("passed the function")
           const emp = {
             _id: employees._id,
