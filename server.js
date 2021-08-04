@@ -278,11 +278,9 @@ app.post('/leave-application-emp/:id', (req, res) => {
 //Updating LeaveBalance in employee Record
 
 app.put('/leave-application-emp/:id/leave-balance/', (req, res) => {
-	let LeaveBalance = req.body.leaveBalance - req.body.days
-
 	employees.findByIdAndUpdate(
 		req.params.id,
-		{ $set: { leaveBalance: LeaveBalance } },
+		{ $set: { leaveBalance: req.body.leaveBalance } },
 		function (err, response) {
 			res.send(response)
 		}
