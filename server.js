@@ -196,9 +196,9 @@ app.post('/login', (req, res) => {
 						FirstName: employees.FirstName,
 						LastName: employees.LastName,
 					}
-					var token = jwt.sign(emp, jwtKey)
+					// var token = jwt.sign(emp, jwtKey)
 
-					res.send(token)
+					res.send(emp)
 				} else {
 					// console.log("else part")
 					res.sendStatus(400)
