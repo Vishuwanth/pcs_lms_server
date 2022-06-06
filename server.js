@@ -198,11 +198,7 @@ app.post('/login', (req, res) => {
 						FirstName: employees.FirstName,
 						LastName: employees.LastName,
 					}
-					// var token = jwt.sign(emp, jwtKey)
-					var token = CryptoJS.AES.encrypt(
-						JSON.stringify(res.data),
-						jwtKey
-					).toString()
+					var token = jwt.sign(emp, jwtKey)
 
 					res.send(token)
 				} else {
