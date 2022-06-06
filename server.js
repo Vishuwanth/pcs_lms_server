@@ -33,8 +33,8 @@ app.use(
 
 app.use(bodyParser.json())
 
-const jwtKey = 'PCS SECRET KEY'
-const IV = '5183666c72eec9e4'
+const jwtKey = '6fa979f20126cb08aa645a8f495f6d85' // set random encryption key
+const IV = '7777777a72ddc2f1'
 // const jwtKey = crypto
 // 	.createHash('sha256')
 // 	.update(String('PCS SECRET KEY'))
@@ -69,6 +69,7 @@ const employeeSchema = new mongoose.Schema({
 		{ type: mongoose.Schema.Types.ObjectId, ref: 'LeaveApplication' },
 	],
 	leaveBalance: { type: Number, default: 0 },
+	leavesTaken: { type: Number, default: 0 },
 })
 autoIncrement.initialize(mongoose.connection)
 employeeSchema.plugin(autoIncrement.plugin, {
@@ -207,17 +208,38 @@ app.post('/login', (req, res) => {
 						LastName: employees.LastName,
 					}
 
-					// var cipher = crypto.createCipheriv('aes192', jwtKey)
+					// // var cipher = crypto.createCipheriv('aes192', jwtKey)
 
-					// var token = cipher.update(emp, 'utf8', 'base64')
-					// token += cipher.final('base64')
-					// var token = jwt.sign(emp, jwtKey)
-					let cipher = crypto.createCipheriv('aes-256-ctr', jwtKey, IV)
+					// // var token = cipher.update(emp, 'utf8', 'base64')
+					// // token += cipher.final('base64')
+					// // var token = jwt.sign(emp, jwtKey)
+					// const algorithm = 'aes-256-cbc'
 
-					let encrypted = cipher.update(JSON.stringify(emp), 'utf8', 'hex')
-					encrypted += cipher.final('hex')
-					console.log(encrypted)
-					res.send(encrypted)
+					// // Defining key
+					// const key = crypto.randomBytes(32)
+
+					// // Defining iv
+					// const iv = crypto.randomBytes(16)
+					// let cipher = crypto.createCipheriv(
+					// 	'aes-256-cbc',
+					// 	Buffer.from(key),
+					// 	iv
+					// )
+					// let encrypted = cipher.update('JSON.stringify(emp)')
+					// encrypted = Buffer.concat([encrypted, cipher.final()])
+					// // let encrypted = cipher.update(JSON.stringify(emp), 'utf8', 'hex')
+					// // encrypted += cipher.final('hex')
+					// console.log({
+					// 	iv: iv.toString('hex'),
+					// 	encryptedData: encrypted.toString('hex'),
+					// })
+
+					// // decerpy
+					// // let decipher = crypto.createDecipheriv('aes-256-ctr', jwtKey, IV)
+					// // let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+
+					// // console.log('decryptedData', decrypted + decipher.final('utf8'))
+					res.send(emp)
 				} else {
 					// console.log("else part")
 					res.sendStatus(400)
@@ -300,6 +322,8 @@ app.put('/leave-application-emp/:id/leave-balance/', (req, res) => {
 	employees.findByIdAndUpdate(
 		req.params.id,
 		{ $set: { leaveBalance: req.body.leaveBalance } },
+
+		{ new: true },
 		function (err, response) {
 			res.send(response)
 		}
@@ -513,3 +537,6 @@ app.get('/leave-application-hr/:id/status-mail/', (req, res) => {
 app.listen(process.env.PORT || 9002, () => {
 	console.log('BE started at port 9002')
 })
+// app.listen(9002, () => {
+// 	console.log('BE started at port 9002')
+// })
