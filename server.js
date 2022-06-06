@@ -33,7 +33,13 @@ app.use(
 
 app.use(bodyParser.json())
 
-const jwtKey = 'PCS SECRET KEY'
+// const jwtKey = 'PCS SECRET KEY'
+const jwtKey = crypto
+	.createHash('sha256')
+	.update(String('PCS SECRET KEY'))
+	.digest('base64')
+	.substr(0, 32)
+
 mongoose.set('useCreateIndex', true)
 mongoose.set('useFindAndModify', false)
 mongoose.connect(
@@ -200,12 +206,22 @@ app.post('/login', (req, res) => {
 						LastName: employees.LastName,
 					}
 
-					var cipher = crypto.createDecipheriv('aes192', jwtKey)
+					// var cipher = crypto.createCipheriv('aes192', jwtKey)
 
-					var token = cipher.update(emp, 'utf8', 'hex')
+					// var token = cipher.update(emp, 'utf8', 'base64')
+					// token += cipher.final('base64')
 					// var token = jwt.sign(emp, jwtKey)
+					let cipher = crypto.createCipheriv(
+						'aes-256-ctr',
+						jwtKey,
+						crypto.randomBytes(16).toString('hex').slice(0, 16)
+					)
 
-					res.send(token)
+					console.log(cipher)
+					let encrypted = cipher.update(JSON.stringify(emp), 'utf8', 'hex')
+					encrypted += cipher.final('hex')
+
+					res.send(encrypted)
 				} else {
 					// console.log("else part")
 					res.sendStatus(400)
@@ -498,6 +514,6 @@ app.get('/leave-application-hr/:id/status-mail/', (req, res) => {
 		}
 	})
 })
-app.listen(process.env.PORT || 9002, () => {
+app.listen(9002, () => {
 	console.log('BE started at port 9002')
 })
