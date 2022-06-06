@@ -5,7 +5,9 @@ import mongoose from 'mongoose'
 import autoIncrement from 'mongoose-auto-increment'
 // autoIncrement = require("mongoose-auto-increment")
 import bodyParser from 'body-parser'
-import jwt from 'jsonwebtoken'
+// import jwt from 'jsonwebtoken'
+import CryptoJS from 'crypto-js'
+
 // import Joi from "Joi"
 import cookieParser from 'cookie-parser'
 
@@ -196,7 +198,11 @@ app.post('/login', (req, res) => {
 						FirstName: employees.FirstName,
 						LastName: employees.LastName,
 					}
-					var token = jwt.sign(emp, jwtKey)
+					// var token = jwt.sign(emp, jwtKey)
+					var token = CryptoJS.AES.encrypt(
+						JSON.stringify(res.data),
+						jwtKey
+					).toString()
 
 					res.send(token)
 				} else {
