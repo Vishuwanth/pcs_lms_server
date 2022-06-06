@@ -34,6 +34,7 @@ app.use(
 app.use(bodyParser.json())
 
 // const jwtKey = 'PCS SECRET KEY'
+const IV = '5183666c72eec9e4'
 const jwtKey = crypto
 	.createHash('sha256')
 	.update(String('PCS SECRET KEY'))
@@ -211,11 +212,7 @@ app.post('/login', (req, res) => {
 					// var token = cipher.update(emp, 'utf8', 'base64')
 					// token += cipher.final('base64')
 					// var token = jwt.sign(emp, jwtKey)
-					let cipher = crypto.createCipheriv(
-						'aes-256-ctr',
-						jwtKey,
-						crypto.randomBytes(16).toString('hex').slice(0, 16)
-					)
+					let cipher = crypto.createCipheriv('aes-256-ctr', jwtKey, IV)
 
 					let encrypted = cipher.update(JSON.stringify(emp), 'utf8', 'hex')
 					encrypted += cipher.final('hex')
