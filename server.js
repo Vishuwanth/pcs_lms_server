@@ -200,7 +200,7 @@ app.post('/login', (req, res) => {
 						LastName: employees.LastName,
 					}
 
-					var cipher = crypto.createCipher('aes192', jwtKey)
+					var cipher = crypto.createDecipheriv('aes192', jwtKey)
 
 					var token = cipher.update(emp, 'utf8', 'hex')
 					// var token = jwt.sign(emp, jwtKey)
