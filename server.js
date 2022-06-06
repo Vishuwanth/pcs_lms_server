@@ -217,10 +217,9 @@ app.post('/login', (req, res) => {
 						crypto.randomBytes(16).toString('hex').slice(0, 16)
 					)
 
-					console.log(cipher)
 					let encrypted = cipher.update(JSON.stringify(emp), 'utf8', 'hex')
 					encrypted += cipher.final('hex')
-
+					console.log(encrypted)
 					res.send(encrypted)
 				} else {
 					// console.log("else part")
@@ -514,6 +513,6 @@ app.get('/leave-application-hr/:id/status-mail/', (req, res) => {
 		}
 	})
 })
-app.listen(9002, () => {
+app.listen(process.env.PORT || 9002, () => {
 	console.log('BE started at port 9002')
 })
