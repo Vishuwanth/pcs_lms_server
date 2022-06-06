@@ -33,13 +33,13 @@ app.use(
 
 app.use(bodyParser.json())
 
-// const jwtKey = 'PCS SECRET KEY'
+const jwtKey = 'PCS SECRET KEY'
 const IV = '5183666c72eec9e4'
-const jwtKey = crypto
-	.createHash('sha256')
-	.update(String('PCS SECRET KEY'))
-	.digest('base64')
-	.substr(0, 32)
+// const jwtKey = crypto
+// 	.createHash('sha256')
+// 	.update(String('PCS SECRET KEY'))
+// 	.digest('base64')
+// 	.substr(0, 32)
 
 mongoose.set('useCreateIndex', true)
 mongoose.set('useFindAndModify', false)
